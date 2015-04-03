@@ -43,7 +43,7 @@ class WinXP(CollectorBase):
         logging.info("Collection of registry and NTUSER.DATs completed")
 
         logging.info("Collection of File System artifacts started")
-        mft = self.collect_fs_data().values()
+        self.collect_fs_data()  # Nothing to extract
         logging.info("Collection of File System artifacts completed")
 
         logging.info("Collection of USB artifacts started")
@@ -65,8 +65,6 @@ class WinXP(CollectorBase):
         for i in app:
             paths.append(i)
         for i in reg:
-            paths.append(i)
-        for i in mft:
             paths.append(i)
         for i in usb:
             paths.append(i)
@@ -212,7 +210,7 @@ class Win7(CollectorBase):
         logging.info("Collection of registry and NTUSER.DATs completed")
 
         logging.info("Collection of File System artifacts started")
-        mft = self.collect_fs_data().values()
+        self.collect_fs_data()  # Nothing to extract
         logging.info("Collection of File System artifacts completed")
 
         logging.info("Collection of USB artifacts started")
@@ -235,8 +233,6 @@ class Win7(CollectorBase):
         for i in app:
             paths.append(i)
         for i in reg:
-            paths.append(i)
-        for i in mft:
             paths.append(i)
         for i in usb:
             paths.append(i)

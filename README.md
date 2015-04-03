@@ -36,6 +36,7 @@ See `requirements.txt`
 - [x] Windows XP
 
 ## Supported Features
+- [x] Copy out $MFT, $Logfile, $J - Uses RawCopy
 - [x] Grab USB related files
 - [x] Create file listing of collected files, the time, and the hash
 - [x] Collect files based on file extensions
@@ -55,7 +56,6 @@ See `requirements.txt`
 ### Potential Support
 - [ ] Compression of Tar Output
 - [ ] Yara Searching
-- [ ] Copy out $MFT, $Logfile, $J - Cannot grab while partition is mounted
 - [ ] Windows 10
 - [ ] Windows 8
 - [ ] Windows Vista
@@ -75,6 +75,7 @@ See `requirements.txt`
 # ToDo List
 - [ ] Verification & Validation
 - [ ] Remote connection
+- [ ] Add dependencies into libs folder for simple redistribution
 - [ ] Different image sizes and compressions (benchmarks)
 
 

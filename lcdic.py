@@ -12,7 +12,7 @@ import logging
 base = os.path.dirname(os.path.realpath(__file__))
 
 
-def main(outpath, targ, os_type, config):
+def main(outpath, targ, rule, os_type, config):
     start = datetime.datetime.now()
 
     if not os.path.exists(outpath):
@@ -45,9 +45,11 @@ def main(outpath, targ, os_type, config):
     logging.info('Evidence: ' + targ)
     logging.info('Output directory: ' + outpath)
     logging.info('Configuration File: ' + config['config_path'])
+    logging.info('Yara Rule: ' + rule)
 
     from collectors import windows
     from collectors import debian
+    from collectors import search
 
     coll = None
 
@@ -80,6 +82,15 @@ def main(outpath, targ, os_type, config):
     # Call methods
     paths_to_process = coll.collector()
 
+    # Add in Yara
+    if rule:
+        logging.info('Yara Searching Started')
+        ysearch = search.YaraSearch(rule, targ)
+        rules = ysearch.run()
+        logging.info('Yara Searching Completed')
+        for r in rules:
+            paths_to_process.append(r['file'])
+
     logging.info("Creation of TarBall started")
     coll.complete_collection(paths_to_process)
     logging.info("Creation of TarBall completed")
@@ -111,8 +122,10 @@ def _argparse():
     parser.add_argument('dest', metavar='/path/to/output', help="Path to the root of the output directory, "
                                                                 "will create if it does not exist")
     parser.add_argument('os', metavar='list', help='Select OS. type `list` for list of supports OS\'s')
-    parser.add_argument('-c', '--config', help='Path to custom config file. Default is ./config.ini',
-                        default='./config.ini')
+    parser.add_argument('-c', '--config', help='Path to custom config file. Default is config/config.ini',
+                        default=base+'/config/config.ini')
+    parser.add_argument('-r', '--rule', help='Yara Search Term (single string keyword) or Path to custom Yara rules '
+                                             'file. Sample located in config/yara.rules')
     return parser.parse_args()
 
 
@@ -175,7 +188,7 @@ if __name__ == '__main__':
 
     outpath = os.path.join(args.dest, config['case_number'])
 
-    main(outpath, args.targ, os_type, config)
+    main(outpath, args.targ, args.rule, os_type, config)
 
 
 

@@ -43,13 +43,20 @@ class CollectorBase(object):
 
         import tarfile
         import datetime
+        import progressbar
 
         hashlog = open(self.dest + '/hashlist.txt', 'w')
 
+        pbar = progressbar.ProgressBar(widgets=[progressbar.Bar('+'), ' ', progressbar.ProgressBar(), ' ',
+                                                progressbar.ETA(), ' ', progressbar.SimpleProgress()],
+                                       maxval=len(files)).start()
+        p = 0
         hashlog.write('Time'.ljust(31) + self.hashtype.upper().ljust(45) + 'File Path\n')
         try:
             with tarfile.open(self.dest + '/' + self.eid + '.tar', mode='w', dereference=False) as temp_tar:
                 for entry in files:
+                    p += 1
+                    pbar.update(p)
                     if os.path.isdir(entry):
                         for root, dirs, files in os.walk(entry):
                             for f in files:
@@ -64,6 +71,7 @@ class CollectorBase(object):
                                     temp_tar.add(fname)
                                 else:
                                     logging.warning('Link File excluded: ' + fname)
+
                     elif os.path.isfile(entry):
                         try:
                             hasher = self._hasher(open(entry, 'rb').read())
@@ -78,7 +86,7 @@ class CollectorBase(object):
         except IOError, e:
             import datetime
             self.eid = str(datetime.datetime.now().strftime('%y-%m-%d_%H-%M-%S'))
-            logging.log('Tar File IO Error; Likely open. Writing to: ' + self.eid)
+            logging.info('Tar File IO Error; Likely open. Writing to: ' + self.eid)
             self._tarball(files)
 
         return self.dest + '/' + self.eid + '.tar'
