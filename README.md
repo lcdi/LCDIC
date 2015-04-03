@@ -34,7 +34,7 @@ See `requirements.txt`
 - [ ] User Selection
 - [ ] Document Collection (See Below)
 - [ ] Yara Searching
-- [-] Copy out $MFT, $Logfile, $J - Cannot grab while partition is mounted
+- [ ] Copy out $MFT, $Logfile, $J - Cannot grab while partition is mounted
 - [ ] Windows 10
 - [ ] Windows 8
 - [ ] Windows Vista
