@@ -72,7 +72,7 @@ def main(outpath, targ, os_type, config):
         coll.target_user = targeted_user
     if extensions:
         coll.extensions = extensions
-        coll.ext_for_users
+        coll.ext_for_users = ext_for_users
     coll.setup()
 
     # Call methods
@@ -103,13 +103,14 @@ def _argparse():
 
     parser = argparse.ArgumentParser(description='LCDI Collector, a script to automate targeted collections. '
                                                  'See config.ini to set optional information and configurations',
-                                     version=__version__, epilog='Create by ' + __author__)
+                                     version=__version__, epilog='Created by ' + __author__)
 
     parser.add_argument('targ', metavar='C:', help="Path to the root of the targeted volume")
     parser.add_argument('dest', metavar='/path/to/output', help="Path to the root of the output directory, "
                                                                 "will create if it does not exist")
     parser.add_argument('os', metavar='list', help='Select OS. type `list` for list of supports OS\'s')
-    parser.add_argument('-c', '--config', help='Path to config file. Default is ./config.ini', default='./config.ini')
+    parser.add_argument('-c', '--config', help='Path to custom config file. Default is ./config.ini',
+                        default='./config.ini')
     return parser.parse_args()
 
 

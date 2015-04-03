@@ -50,7 +50,7 @@ class WinXP(CollectorBase):
         usb = self.collect_usb().values()
         logging.info("Collection of USB artifacts completed")
 
-        if self.target_user:
+        if self.target_user and self.extensions:
             logging.info("Collection of User Document artifacts started")
             for user in self.users:
                 if user in self.target_user:
@@ -141,20 +141,24 @@ class WinXP(CollectorBase):
         self._tarball(paths)
 
     def collect_docs(self):
-        self.doc_array = []
-        self.doc_ext = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'rtf', 'tiff', 'ods', 'odt',  # Docs
-                        'odp', 'odb', 'odg', 'odf', 'fodt', 'fods', 'fodp', 'fodg',  # Docs
-                        'png', 'jpg', 'jpeg',  # Images
-                        'mp3', 'm4a', 'wma',  # Audio
-                        'm4v', 'wmv', 'mov',  # Video
-                        'zip', 'tar', 'tgz', 'gz', '7z',  # Archives
-                        'exe', 'bat', 'cmd', 'sh', 'pf'  # Executables
-        ]
-        for user in self.target_user:
-            for root, dirs, files in os.walk(self.user_path + user):
-                for entry in files:
-                    if os.path.splitext(entry)[-1].strip('.') in self.doc_ext:
-                        self.doc_array.append(os.path.join(root + '/' + entry))
+
+        self.doc_array = list()
+
+        # Collect data from specified users
+        if self.extensions and self.ext_for_users:
+            for user in self.target_user:
+                for root, dirs, files in os.walk(self.user_path + user):
+                    for entry in files:
+                        if os.path.splitext(entry)[-1].strip('.') in self.extensions:
+                            self.doc_array.append(os.path.join(root + '/' + entry))
+
+        # Collect data from all users
+        elif self.extensions and not self.ext_for_users:
+            for user in self.users:
+                for root, dirs, files in os.walk(self.user_path + user):
+                    for entry in files:
+                        if os.path.splitext(entry)[-1].strip('.') in self.extensions:
+                            self.doc_array.append(os.path.join(root + '/' + entry))
 
         return self.doc_array
 
