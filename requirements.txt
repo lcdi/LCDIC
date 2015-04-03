@@ -1,2 +1,1 @@
 easygui>=0.97.2
-python-progressbar>=0.97.2
