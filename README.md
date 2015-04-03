@@ -7,11 +7,22 @@ Written by Chapin Bryce
 
 # Usage
 
-GUI:
+## GUI:
 `python lcdic_gui.py`
 
-Command line:
+- Follow the GUi steps to begin using the tool!
+
+## Command line:
 `python lcdic.py E: \output\path --os [OS TYPE]`
+
+- Where `E:` is the mounted drive to collect from 
+  - Can be mounted with F-response (not tested)
+  - Can be mounted with FTK Imager
+  - Can be a local directory of a non-system partition
+- Where `\output\path` is the path to the output
+  - Can be a full or relative path
+- Where `--os` is the OS to collect
+  - To get a list of supported OS's, run `--os list`
 
 # Dependencies
 
@@ -29,10 +40,20 @@ See `requirements.txt`
 - [x] Create file listing of collected files, the time, and the hash
 - [x] Collect files based on file extensions
 - [x] Allow the collection of specific users
+- [x] User Selection
+- [x] Document Collection (See Below)
+
+## User Specific Collections
+- [x] Examiner Specified Extensions in Config.ini
+- [x] Documents (docx, xlsx, pdf, pptx, txt, rtf, tiff)
+- [x] Images (png, jpg)
+- [x] Audio (mp3, m4a, wma)
+- [x] Video (m4v, wmv, mov)
+- [x] Archives (zip, tar, 7z)
+- [x] Executables (exe, bat, sh, pf)
 
 ### Potential Support
-- [ ] User Selection
-- [ ] Document Collection (See Below)
+- [ ] Tar Compression
 - [ ] Yara Searching
 - [ ] Copy out $MFT, $Logfile, $J - Cannot grab while partition is mounted
 - [ ] Windows 10
@@ -51,16 +72,8 @@ See `requirements.txt`
 - [ ] CentOS
 - [ ] Red Hat
 
-## User Specific Collections
-- [x] Documents (docx, xlsx, pdf, pptx, txt, rtf, tiff)
-- [x] Images (png, jpg)
-- [x] Audio (mp3, m4a, wma)
-- [x] Video (m4v, wmv, mov)
-- [x] Archives (zip, tar, 7z)
-- [x] Executables (exe, bat, sh, pf)
-
 # ToDo List
-- [ ] Verification
+- [ ] Verification & Validation
 - [ ] Remote connection
 - [ ] Different image sizes and compressions (benchmarks)
 
