@@ -47,32 +47,38 @@ class CollectorBase(object):
         hashlog = open(self.dest + '/hashlist.txt', 'w')
 
         hashlog.write('Time'.ljust(31) + self.hashtype.upper().ljust(45) + 'File Path\n')
-        with tarfile.open(self.dest + '/' + self.eid + '.tar', mode='w', dereference=False) as temp_tar:
-            for entry in files:
-                if os.path.isdir(entry):
-                    for root, dirs, files in os.walk(entry):
-                        for f in files:
-                            fname = os.path.join(root, f)
-                            try:
-                                hasher = self._hasher(open(fname, 'rb').read())
-                            except IOError, e:
-                                hasher = 'Could Not Process'
-                            hashlog.write(str(datetime.datetime.now()).ljust(31) + str(hasher).ljust(45)
-                                          + fname + '\n')
-                            if not os.path.islink(fname):
-                                temp_tar.add(fname)
-                            else:
-                                logging.warning('Link File excluded: ' + fname)
-                elif os.path.isfile(entry):
-                    try:
-                        hasher = self._hasher(open(entry, 'rb').read())
-                    except IOError, e:
-                        hasher = 'Could Not Process'
-                    hashlog.write(str(datetime.datetime.now()).ljust(31) + str(hasher).ljust(45)
-                                  + entry + '\n')
-                    temp_tar.add(entry)
+        try:
+            with tarfile.open(self.dest + '/' + self.eid + '.tar', mode='w', dereference=False) as temp_tar:
+                for entry in files:
+                    if os.path.isdir(entry):
+                        for root, dirs, files in os.walk(entry):
+                            for f in files:
+                                fname = os.path.join(root, f)
+                                try:
+                                    hasher = self._hasher(open(fname, 'rb').read())
+                                except IOError, e:
+                                    hasher = 'Could Not Process'
+                                hashlog.write(str(datetime.datetime.now()).ljust(31) + str(hasher).ljust(45)
+                                              + fname + '\n')
+                                if not os.path.islink(fname):
+                                    temp_tar.add(fname)
+                                else:
+                                    logging.warning('Link File excluded: ' + fname)
+                    elif os.path.isfile(entry):
+                        try:
+                            hasher = self._hasher(open(entry, 'rb').read())
+                        except IOError, e:
+                            hasher = 'Could Not Process'
+                        hashlog.write(str(datetime.datetime.now()).ljust(31) + str(hasher).ljust(45)
+                                      + entry + '\n')
+                        temp_tar.add(entry)
 
-        hashlog.close()
-        temp_tar.close()
+            hashlog.close()
+            temp_tar.close()
+        except IOError, e:
+            import datetime
+            self.eid = str(datetime.datetime.now().strftime('%y-%m-%d_%H-%M-%S'))
+            logging.log('Tar File IO Error; Likely open. Writing to: ' + self.eid)
+            self._tarball(files)
 
         return self.dest + '/' + self.eid + '.tar'

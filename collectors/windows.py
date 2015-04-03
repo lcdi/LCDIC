@@ -120,14 +120,30 @@ class WinXP(CollectorBase):
         Collect data from file system for parsing
         :return: dictionary of paths to file system data
         """
+        # TODO Add in ability to zip extracted files
+        import subprocess
 
         fsdata = dict()
-        # TODO Cannot grab the MFT while the file system is in use
-        # fsdata['MFT'] = self.targ + '/$MFT'
-        # fsdata['LogFile'] = self.targ + '$/LogFile'
-        # fsdata['USN'] = self.targ + '/$Extend/$UsnJrnl'
 
-        return fsdata
+        fsdata['MFT'] = self.targ + '0'
+        fsdata['LogFile'] = self.targ + '2'
+        # fsdata['USN'] = self.targ + '\\$Extend\\$UsnJrnl' ## Not in WinXP
+
+        from lcdic import base
+
+        for key in fsdata.keys():
+            try:
+                cmd = base+'\\libs\\RawCopy\\RawCopy64.exe ' + fsdata[key] + ' ' + os.path.abspath(self.dest) + ' -AllAttr'
+                subprocess.call(cmd, shell=True)
+            except Exception, e:
+                logging.warning('Could not extract $MFT using 64bit tool...Trying 32bit...')
+                try:
+                    cmd = base+'\\libs\\RawCopy\\RawCopy.exe ' + fsdata[key] + ' ' + os.path.abspath(self.dest) + ' -AllAttr'
+                    subprocess.call(cmd, shell=True)
+                except Exception, e:
+                    logging.error('Could not Extract ' + key + '!')
+
+        return None
 
     def collect_usb(self):
         """
@@ -209,10 +225,10 @@ class Win7(CollectorBase):
                 for user in self.users:
                     if user in self.target_user:
                         # collect all data from this user
-                        docs = self.collect_docs(self.user_path+user)
+                        docs = self.collect_docs()
             else:
                 # Collect files matching extension on any location of system
-                docs = self.collect_docs(self.targ)
+                docs = self.collect_docs()
             logging.info("Collection of file extensions artifacts completed")
 
         paths = []
@@ -285,20 +301,49 @@ class Win7(CollectorBase):
         Collect data from file system for parsing
         :return: dictionary of paths to file system data
         """
+        # TODO Add in ability to zip extracted files
+        import subprocess
 
         fsdata = dict()
-        # TODO Cannot grab the MFT while the file system is in use
-        # fsdata['MFT'] = self.targ + '/$MFT'
-        # fsdata['LogFile'] = self.targ + '$/LogFile'
-        # fsdata['USN'] = self.targ + '/$Extend/$UsnJrnl'
 
-        return fsdata
+        fsdata['USN'] = self.targ + '\\$Extend\\$UsnJrnl:$J'
+        fsdata['MFT'] = self.targ + '0'
+        fsdata['LogFile'] = self.targ + '2'
 
-    def collect_docs(self, basepath):
-        for root, dirs, files in os.walk(basepath):
-            for entry in files:
-                if os.path.splitext(entry)[-1].strip('.').lower() in self.doc_ext.lower():
-                    self.doc_array.append(os.path.join(root + '/' + entry))
+        from lcdic import base
+
+        for key in fsdata.keys():
+            try:
+                cmd = base+'\\libs\\RawCopy\\RawCopy64.exe ' + fsdata[key] + ' ' + os.path.abspath(self.dest) + ' -AllAttr'
+                subprocess.check_output(cmd, shell=True)
+            except Exception, e:
+                logging.warning('Could not extract $MFT using 64bit tool...Trying 32bit...')
+                try:
+                    cmd = base+'\\libs\\RawCopy\\RawCopy.exe ' + fsdata[key] + ' ' + os.path.abspath(self.dest) + ' -AllAttr'
+                    subprocess.check_output(cmd, shell=True)
+                except Exception, e:
+                    logging.error('Could not Extract ' + key + '!')
+
+        return None
+
+    def collect_docs(self):
+        self.doc_array = list()
+
+        # Collect data from specified users
+        if self.extensions and self.ext_for_users:
+            for user in self.target_user:
+                for root, dirs, files in os.walk(self.user_path + user):
+                    for entry in files:
+                        if os.path.splitext(entry)[-1].strip('.') in self.extensions:
+                            self.doc_array.append(os.path.join(root + '/' + entry))
+
+        # Collect data from all users
+        elif self.extensions and not self.ext_for_users:
+            for user in self.users:
+                for root, dirs, files in os.walk(self.user_path + user):
+                    for entry in files:
+                        if os.path.splitext(entry)[-1].strip('.') in self.extensions:
+                            self.doc_array.append(os.path.join(root + '/' + entry))
 
         return self.doc_array
 

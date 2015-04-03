@@ -9,6 +9,8 @@ import logging
 # Main function. Callable by other scripts
 #
 
+base = os.path.dirname(os.path.realpath(__file__))
+
 
 def main(outpath, targ, os_type, config):
     start = datetime.datetime.now()

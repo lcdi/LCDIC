@@ -53,7 +53,7 @@ See `requirements.txt`
 - [x] Executables (exe, bat, sh, pf)
 
 ### Potential Support
-- [ ] Tar Compression
+- [ ] Compression of Tar Output
 - [ ] Yara Searching
 - [ ] Copy out $MFT, $Logfile, $J - Cannot grab while partition is mounted
 - [ ] Windows 10
@@ -76,6 +76,5 @@ See `requirements.txt`
 - [ ] Verification & Validation
 - [ ] Remote connection
 - [ ] Different image sizes and compressions (benchmarks)
-
 
 
