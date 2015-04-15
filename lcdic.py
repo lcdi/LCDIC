@@ -91,9 +91,9 @@ def main(outpath, targ, rule, os_type, config):
         for r in rules:
             paths_to_process.append(r['file'])
 
-    logging.info("Creation of TarBall started")
+    logging.info("Creation of TarBall and Hashing started")
     coll.complete_collection(paths_to_process)
-    logging.info("Creation of TarBall completed")
+    logging.info("Creation of TarBall and Hashing completed")
     end = datetime.datetime.now()
     logging.info('Run time: ' + str(end - start))
     logging.info("LCDI Collector Completed")
@@ -125,7 +125,7 @@ def _argparse():
     parser.add_argument('-c', '--config', help='Path to custom config file. Default is config/config.ini',
                         default=base+'/config/config.ini')
     parser.add_argument('-r', '--rule', help='Yara Search Term (single string keyword) or Path to custom Yara rules '
-                                             'file. Sample located in config/yara.rules')
+                                             'file. Sample located in config/yara.rules', default='')
     return parser.parse_args()
 
 
