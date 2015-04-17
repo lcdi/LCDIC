@@ -3,10 +3,20 @@ __license__ = ''
 __date__ = ''
 __version__ = ''
 
+from platform.windows_base import Base
 
-class Win7():
+
+class Win7(Base):
     def __init__(self):
-        pass
+        """
+
+        :return:
+        """
+        super(Win7, self).__init__()
+
+        self.user_dir_base = r'\Users'
+        self.appdata_location = r'\appdata'
+        self.system_users = ['All Users', 'Default', 'Default User', 'Public']
 
 
 class Factory():
