@@ -20,6 +20,9 @@ class tarPackage(object):
         :param files: list of string paths to directories and files
         :return:
         """
+
+        # TODO try to load files into memory to avoid having to read them twice across the wire
+
         import datetime
         hashlog = open(self.dest + '/hashlist.txt', 'w')
 
@@ -58,6 +61,7 @@ class tarPackage(object):
                         hashlog.write(str(datetime.datetime.now()).ljust(31) + str(hasher).ljust(45)
                                       + entry + '\n')
                         temp_tar.add(entry)
+                    hashlog.flush()
                 pbar.finish()
             hashlog.close()
             temp_tar.close()

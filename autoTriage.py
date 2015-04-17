@@ -140,6 +140,7 @@ class autoTriage():
         gather = tarPackage(os.path.join(self.output, config['case_number']), config['evidence_number'],
                             config['hash_type'])
         gather.package(self.os.paths)
+        pass
 
 if __name__ == '__main__':
 

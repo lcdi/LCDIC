@@ -15,7 +15,7 @@ class Win7(Base):
         super(Win7, self).__init__()
 
         self.user_dir_base = r'\Users'
-        self.appdata_location = r'\appdata'
+        self.appdata_location = r'\AppData'
         self.system_users = ['All Users', 'Default', 'Default User', 'Public']
 
 
