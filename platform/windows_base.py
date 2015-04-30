@@ -66,3 +66,6 @@ class Base(object):
                 self.paths.append(data)
         for data in b:
                 self.paths.append(data)
+
+    def process_system(self, config):
+        pass
