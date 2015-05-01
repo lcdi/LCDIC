@@ -41,7 +41,7 @@ Written by Chapin Bryce
 
 In Example...
 
-`python lcdic.py E: \output\path --os [OS TYPE] -c [Config File] -r [YARA Rules]`
+`python lcdic.py E: \output\path [OS TYPE] -c [Config File] -r [YARA Rules]`
 
 - Where `E:` is the mounted drive to collect from 
   - Can be mounted with F-response (not tested)
@@ -49,8 +49,8 @@ In Example...
   - Can be a local directory of a non-system partition
 - Where `\output\path` is the path to the output
   - Can be a full or relative path
-- Where `--os` is the OS to collect
-  - To get a list of supported OS's, run `--os list`
+- Where `[OS TYPE]` is the OS to collect
+  - To get a list of supported OS's, type `list`
 
 # Dependencies
 
