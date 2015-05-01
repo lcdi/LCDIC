@@ -57,7 +57,7 @@ class WinXP(CollectorBase):
                     # collect all data from this user
                     docs = self.collect_docs()
                 else:
-                    docs = None
+                    docs = []
             logging.info("Collection of User Document artifacts completed")
 
         # Append data to paths
