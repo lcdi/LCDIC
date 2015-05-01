@@ -2,7 +2,7 @@ rule test
 {
     strings:
         // A new variable should be made for each keyword you wish to search
-        $keyword_string = "d08429t"  // String you wish to search
+        $keyword_string = "authentication failed"  // String you wish to search
 
     condition:
         // Assign each variable here to search. You can use and/or statements to change the logic

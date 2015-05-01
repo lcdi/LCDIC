@@ -57,7 +57,7 @@ class WinXP(CollectorBase):
                     # collect all data from this user
                     docs = self.collect_docs()
                 else:
-                    docs = None
+                    docs = []
             logging.info("Collection of User Document artifacts completed")
 
         # Append data to paths
@@ -123,6 +123,9 @@ class WinXP(CollectorBase):
 
         fsdata = dict()
 
+        if not os.path.exists(os.path.join(os.path.abspath(self.dest), 'filesystem_artifacts')):
+            os.makedirs(os.path.join(os.path.abspath(self.dest), 'filesystem_artifacts'))
+
         fsdata['MFT'] = self.targ + '0'
         fsdata['LogFile'] = self.targ + '2'
         # fsdata['USN'] = self.targ + '\\$Extend\\$UsnJrnl' ## Not in WinXP
@@ -131,12 +134,12 @@ class WinXP(CollectorBase):
 
         for key in fsdata.keys():
             try:
-                cmd = base+'\\libs\\RawCopy\\RawCopy64.exe ' + fsdata[key] + ' ' + os.path.abspath(self.dest) + ' -AllAttr'
+                cmd = base+'\\libs\\RawCopy\\RawCopy64.exe ' + fsdata[key] + ' ' + os.path.join(os.path.abspath(self.dest), 'filesystem_artifacts') + ' -AllAttr'
                 subprocess.call(cmd, shell=True)
             except Exception, e:
                 logging.warning('Could not extract $MFT using 64bit tool...Trying 32bit...')
                 try:
-                    cmd = base+'\\libs\\RawCopy\\RawCopy.exe ' + fsdata[key] + ' ' + os.path.abspath(self.dest) + ' -AllAttr'
+                    cmd = base+'\\libs\\RawCopy\\RawCopy.exe ' + fsdata[key] + ' ' + os.path.join(os.path.abspath(self.dest), 'filesystem_artifacts') + ' -AllAttr'
                     subprocess.call(cmd, shell=True)
                 except Exception, e:
                     logging.error('Could not Extract ' + key + '!')
@@ -210,7 +213,8 @@ class Win7(CollectorBase):
         logging.info("Collection of registry and NTUSER.DATs completed")
 
         logging.info("Collection of File System artifacts started")
-        self.collect_fs_data()  # Nothing to extract
+        # fs = self.collect_fs_data()
+        fs = []
         logging.info("Collection of File System artifacts completed")
 
         logging.info("Collection of USB artifacts started")
@@ -237,6 +241,8 @@ class Win7(CollectorBase):
         for i in usb:
             paths.append(i)
         for i in docs:
+            paths.append(i)
+        for i in fs:
             paths.append(i)
 
         return paths
@@ -302,25 +308,37 @@ class Win7(CollectorBase):
 
         fsdata = dict()
 
-        fsdata['USN'] = self.targ + '\\$Extend\\$UsnJrnl:$J'
+        if not os.path.exists(os.path.join(os.path.abspath(self.dest), 'filesystem_artifacts')):
+            os.makedirs(os.path.join(os.path.abspath(self.dest), 'filesystem_artifacts'))
+
         fsdata['MFT'] = self.targ + '0'
         fsdata['LogFile'] = self.targ + '2'
 
-        from lcdic import base
+        from lcdic import base  # import base variable, not base module!
+        from libs import pyads
+
+        j = pyads.ADS(self.targ + '\\$Extend\\$UsnJrnl:$J')
+        if len(j.getStreams()):  # if a stream is detected, copy it out. reads entire journal into RAM, may cause issues
+            j.extractStream('', outfile=os.path.join(os.path.abspath(self.dest), 'filesystem_artifacts', 'USN_$J'))
+            logging.info('Completed USN Journal Extraction')
 
         for key in fsdata.keys():
             try:
-                cmd = base+'\\libs\\RawCopy\\RawCopy64.exe ' + fsdata[key] + ' ' + os.path.abspath(self.dest) + ' -AllAttr'
+                cmd = base+'\\libs\\RawCopy\\RawCopy64.exe ' + fsdata[key] + ' ' + os.path.join(os.path.abspath(self.dest), 'filesystem_artifacts') + ' -AllAttr'
                 subprocess.check_output(cmd, shell=True)
             except Exception, e:
                 logging.warning('Could not extract $MFT using 64bit tool...Trying 32bit...')
                 try:
-                    cmd = base+'\\libs\\RawCopy\\RawCopy.exe ' + fsdata[key] + ' ' + os.path.abspath(self.dest) + ' -AllAttr'
+                    cmd = base+'\\libs\\RawCopy\\RawCopy.exe ' + fsdata[key] + ' ' + os.path.join(os.path.abspath(self.dest), 'filesystem_artifacts') + ' -AllAttr'
                     subprocess.check_output(cmd, shell=True)
                 except Exception, e:
                     logging.error('Could not Extract ' + key + '!')
+            logging.info('Completed ' + key + ' Extraction')
 
-        return None
+
+
+
+        return {'path': os.path.join(os.path.abspath(self.dest), 'filesystem_artifacts')}
 
     def collect_docs(self):
         self.doc_array = list()
