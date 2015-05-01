@@ -13,7 +13,35 @@ Written by Chapin Bryce
 - Follow the GUi steps to begin using the tool!
 
 ## Command line:
-`python lcdic.py E: \output\path --os [OS TYPE]`
+
+
+	python.exe lcdic.py -h
+	usage: lcdic.py [-h] [-c CONFIG] [-r RULE] C: /path/to/output list
+
+	LCDI Collector, a script to automate targeted collections. See config.ini to
+	set optional information and configurations
+
+	positional arguments:
+	  C:                    Path to the root of the targeted volume
+	  /path/to/output       Path to the root of the output directory, will create
+							if it does not exist
+	  list                  Select OS. type `list` for list of supports OS's
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -c CONFIG, --config CONFIG
+							Path to custom config file. Default is
+							config/config.ini
+	  -r RULE, --rule RULE  Yara Search Term (single string keyword) or Path to
+							custom Yara rules file. Sample located in
+							config/yara.rules
+
+	Created by Chapin Bryce
+
+
+In Example...
+
+`python lcdic.py E: \output\path --os [OS TYPE] -c [Config File] -r [YARA Rules]`
 
 - Where `E:` is the mounted drive to collect from 
   - Can be mounted with F-response (not tested)
