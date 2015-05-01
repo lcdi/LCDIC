@@ -7,6 +7,10 @@ Written by Chapin Bryce
 
 # Usage
 
+Since system files are accessed by the script, please launch all consoles as administrator to ensure Python has the privileges needed.
+
+This was written and tested with Python 2.7 x64 on Windows 7 x64. Please report all bugs in the issues tab on http://Github.com/lcdi/lcdic 
+
 ## GUI:
 `python lcdic_gui.py`
 
